@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 01, 2026 at 03:38 PM
+-- Generation Time: Jun 01, 2026 at 03:44 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -21,12 +21,41 @@ SET time_zone = "+00:00";
 -- Database: `firesale`
 --
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_users`
+--
+
+CREATE TABLE `admin_users` (
+  `admin_id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Dumping data for table `admin_users`
 --
 
 INSERT INTO `admin_users` (`admin_id`, `username`, `password`, `email`) VALUES
 (1, 'admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin@firesale.com');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `customers`
+--
+
+CREATE TABLE `customers` (
+  `customer_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `address` text DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `customers`
@@ -42,6 +71,26 @@ INSERT INTO `customers` (`customer_id`, `name`, `email`, `password`, `address`, 
 (7, 'Debjani Nandy', 'debjani.n@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '12/3 R.N. Mukherjee Road, Siliguri - 734001', '9647123456', '2026-05-29 06:30:34'),
 (8, 'Rajib Chakraborty', 'rajib.c@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'House 22, Bidhan Pally, Durgapur - 713201', '7003123456', '2026-05-29 06:30:34'),
 (9, 'Moumita Ghosh', 'moumita.g@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '89/1A Bondel Road, Kolkata - 700019', '9830456789', '2026-05-29 06:30:34');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `orders`
+--
+
+CREATE TABLE `orders` (
+  `order_id` int(11) NOT NULL,
+  `order_date` datetime DEFAULT current_timestamp(),
+  `customer_id` int(11) DEFAULT NULL,
+  `total_amount` decimal(10,2) NOT NULL,
+  `shipping_address` text NOT NULL,
+  `billing_address` text NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `order_status` varchar(50) DEFAULT 'pending',
+  `tracking_number` varchar(100) DEFAULT NULL,
+  `guest_checkout` tinyint(4) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `orders`
@@ -66,6 +115,21 @@ INSERT INTO `orders` (`order_id`, `order_date`, `customer_id`, `total_amount`, `
 (16, '2025-05-24 17:45:00', 2, 44.99, '15/2 Lake Road, Kolkata - 700029', '15/2 Lake Road, Kolkata - 700029', 'amit.c@example.com', '9876543210', 'pending', NULL, 0),
 (17, '2026-05-29 12:06:22', 4, 89.99, '45/A College Street, Burdwan - 713101', '45/A College Street, Burdwan - 713101', 'sayan.d@example.com', '9748552211', 'processing', 'TRK789010', 0),
 (18, '2026-05-29 13:31:14', 1, 44.99, '5 no azad hind nagar', 'near netaji boys club', 'sameerprasad981@gmail.com', '07980595668', 'delivered', '000000', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_items`
+--
+
+CREATE TABLE `order_items` (
+  `order_item_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `size` varchar(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `order_items`
@@ -100,6 +164,22 @@ INSERT INTO `order_items` (`order_item_id`, `order_id`, `product_id`, `quantity`
 (26, 16, 2, 1, 89.99, '9'),
 (27, 18, 27, 1, 44.99, 'One Size');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payments`
+--
+
+CREATE TABLE `payments` (
+  `payment_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `payment_method` varchar(50) NOT NULL,
+  `payment_status` varchar(50) DEFAULT 'pending',
+  `amount` decimal(10,2) NOT NULL,
+  `transaction_id` varchar(100) DEFAULT NULL,
+  `payment_date` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Dumping data for table `payments`
 --
@@ -123,6 +203,24 @@ INSERT INTO `payments` (`payment_id`, `order_id`, `payment_method`, `payment_sta
 (16, 15, 'Credit Card', 'pending', 44.99, 'TXN_OD15', '2026-05-29 06:36:23'),
 (17, 16, 'UPI', 'completed', 89.99, 'TXN_OD16', '2026-05-29 06:36:23'),
 (18, 18, 'Credit Card', 'completed', 44.99, 'TXN_1780041674_3901', '2026-05-29 08:01:14');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `products`
+--
+
+CREATE TABLE `products` (
+  `product_id` int(11) NOT NULL,
+  `product_name` varchar(200) NOT NULL,
+  `category` varchar(100) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `stock_quantity` int(11) NOT NULL DEFAULT 0,
+  `description` text DEFAULT NULL,
+  `image_url` varchar(255) DEFAULT NULL,
+  `sizes` varchar(100) DEFAULT 'S,M,L,XL',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `products`
@@ -156,6 +254,21 @@ INSERT INTO `products` (`product_id`, `product_name`, `category`, `price`, `stoc
 (25, 'Firefly Lamp', 'Home', 49.99, 40, 'LED lamp with flickering flame effect. Rechargeable. 8hr runtime.', 'lamp.jpg', 'One Size', '2026-05-29 06:25:39'),
 (26, 'Ember Coaster Set', 'Home', 12.99, 150, 'Set of 4 heat-resistant coasters with ember design. Silicone.', 'coasters.jpg', 'One Size', '2026-05-29 06:25:39'),
 (27, 'Flame Throw Blanket', 'Home', 19.99, 50, 'Sherpa fleece blanket with fire pattern. Extra warm.', 'blanket.jpg', 'One Size', '2026-05-29 06:25:39');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reviews`
+--
+
+CREATE TABLE `reviews` (
+  `review_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
+  `rating` int(11) DEFAULT NULL CHECK (`rating` >= 1 and `rating` <= 5),
+  `comment` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `reviews`
@@ -197,6 +310,136 @@ INSERT INTO `reviews` (`review_id`, `product_id`, `customer_id`, `rating`, `comm
 (36, 8, 6, 4, 'Fun toy for kids. Battery life is okay.', '2026-05-29 06:32:04'),
 (37, 8, 9, 5, 'Beginner friendly. Easy to control.', '2026-05-29 06:32:04'),
 (38, 8, 1, 5, 'I use it for hobby photography. Worth the price.', '2026-05-29 06:32:04');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `admin_users`
+--
+ALTER TABLE `admin_users`
+  ADD PRIMARY KEY (`admin_id`),
+  ADD UNIQUE KEY `username` (`username`);
+
+--
+-- Indexes for table `customers`
+--
+ALTER TABLE `customers`
+  ADD PRIMARY KEY (`customer_id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Indexes for table `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`order_id`),
+  ADD KEY `customer_id` (`customer_id`);
+
+--
+-- Indexes for table `order_items`
+--
+ALTER TABLE `order_items`
+  ADD PRIMARY KEY (`order_item_id`),
+  ADD KEY `order_id` (`order_id`),
+  ADD KEY `product_id` (`product_id`);
+
+--
+-- Indexes for table `payments`
+--
+ALTER TABLE `payments`
+  ADD PRIMARY KEY (`payment_id`),
+  ADD KEY `order_id` (`order_id`);
+
+--
+-- Indexes for table `products`
+--
+ALTER TABLE `products`
+  ADD PRIMARY KEY (`product_id`);
+
+--
+-- Indexes for table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD PRIMARY KEY (`review_id`),
+  ADD KEY `product_id` (`product_id`),
+  ADD KEY `customer_id` (`customer_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `admin_users`
+--
+ALTER TABLE `admin_users`
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `customers`
+--
+ALTER TABLE `customers`
+  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT for table `order_items`
+--
+ALTER TABLE `order_items`
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
+-- AUTO_INCREMENT for table `payments`
+--
+ALTER TABLE `payments`
+  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT for table `products`
+--
+ALTER TABLE `products`
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
+-- AUTO_INCREMENT for table `reviews`
+--
+ALTER TABLE `reviews`
+  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `orders`
+--
+ALTER TABLE `orders`
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `order_items`
+--
+ALTER TABLE `order_items`
+  ADD CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+
+--
+-- Constraints for table `payments`
+--
+ALTER TABLE `payments`
+  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`);
+
+--
+-- Constraints for table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
