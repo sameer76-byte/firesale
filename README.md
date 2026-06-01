@@ -66,7 +66,7 @@ firesale/
 
 | Homepage | Admin Dashboard |
 |----------|----------------|
-| ![Homepage](screenshots/homepage.png) | ![Admin Dashboard](screenshots/admin_dashboard.png) |
+| ![Homepage](includes/uploads/homepage.png) | ![Admin Dashboard](includes/uploads/admin_dashboard.png) |
 
 *(Add your own screenshots in a `screenshots/` folder.)*
 
