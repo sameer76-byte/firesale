@@ -31,7 +31,7 @@ Fire Sale is a fully functional e-commerce web application designed for fire-the
 ## 📁 Project Structure
 
 ```text
-ecommers/
+firesale/
 ├── index.php, shop.php, product.php, cart.php, checkout.php
 ├── account.php, login.php, register.php
 ├── order_detail.php, order_success.php, sidebar.php
